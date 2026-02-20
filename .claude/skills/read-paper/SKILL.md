@@ -227,10 +227,9 @@ Use `notion-update-page` with `command: "update_properties"` to fill in the meta
 Rules:
 
 - **Year**: Set as a `select` value (string, e.g. `"2024"`). Only set if the year was unambiguously extracted.
-- **Conference**: Set as a `multi_select` value (array of strings). Use the canonical short name if recognizable (e.g. `"CVPR"`, `"NeurIPS"`, `"ICLR"`, `"ICRA"`, `"Science Robotics"`). Omit if the venue is unknown or the paper is only an arXiv preprint.
+- **Conference**: Set as a `multi_select` value (array of strings). Use the canonical short name if recognizable (e.g. `"CVPR"`, `"NeurIPS"`, `"ICLR"`, `"ICRA"`, `"CoRL"`, `"Science Robotics"`). If the paper is an arXiv preprint with no confirmed venue, set to `["Preprint"]`. Always set this field — never leave it empty.
 - **Github**: Set as a `url` value. Omit the property if no GitHub link was found.
 - **Project Page**: Set as a `url` value. Omit the property if no project page was found.
-- **Property name typo**: Some databases spell the arxiv property as `Arixv` instead of `Arxiv`. When fetching DB properties, check the actual property name and use it exactly.
 
 Only include properties in the update payload that have values to set. Do not send null or empty strings for missing fields.
 
