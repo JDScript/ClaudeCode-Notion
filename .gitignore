@@ -11,3 +11,4 @@ wheels/
 
 # Claude Code local settings
 .claude/settings.local.json
+.claude/notion-config.json
