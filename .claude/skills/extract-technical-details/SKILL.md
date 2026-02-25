@@ -77,11 +77,10 @@ For each pipeline stage identified in the paper, extract:
 
 ### 3a. Read the template file
 
-Read the file at:
+**Template fallback chain:**
 
-```
-docs/templates/technical-review-template.md
-```
+1. Read `.claude/notion-config.json`. If the target project has a `templates` page ID, use `notion-fetch` to load that page and look for a child page titled "Technical Review Template". If found, use its content as the template.
+2. If no project-specific template is found, read the local default at `docs/templates/technical-review-template.md`.
 
 Extract the content after the `<!-- TEMPLATE BODY START -->` marker.
 

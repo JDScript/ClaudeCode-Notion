@@ -127,13 +127,12 @@ After fetching, record the following fields for later use:
 
 ## Step 3: Read Template and Generate Summary
 
-### 3a. Read the template file
+### 3a. Read the template
 
-Read the file at:
+**Template fallback chain:**
 
-```
-docs/templates/paper-summary.md
-```
+1. Read `.claude/notion-config.json`. If the target project has a `templates` page ID, use `notion-fetch` to load that page and look for a child page titled "Paper Summary Template". If found, use its content as the template.
+2. If no project-specific template is found, read the local default at `docs/templates/paper-summary.md`.
 
 Extract only the content that appears **after** the line:
 

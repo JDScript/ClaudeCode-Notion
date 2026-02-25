@@ -37,6 +37,11 @@ Read `.claude/notion-config.json` from the repository root.
 
 ## Step 1: Read the Page Template
 
+**Template fallback chain:**
+
+1. Read `.claude/notion-config.json`. If a project-specific template for scaffolding exists (unlikely for new projects, but possible if the user pre-configured one), use it.
+2. Otherwise, read the local default below.
+
 Read the template file at:
 
 ```

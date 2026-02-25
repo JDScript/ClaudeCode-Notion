@@ -96,6 +96,11 @@ After fetching, record:
 
 ### 3a. Template structure
 
+**Template fallback chain:**
+
+1. Read `.claude/notion-config.json`. If the target project has a `templates` page ID, use `notion-fetch` to load that page and look for a child page titled "Dataset Summary Template". If found, use its content as the template.
+2. If no project-specific template is found, use the default template below.
+
 The summary follows this template:
 
 ```

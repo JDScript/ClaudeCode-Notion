@@ -82,11 +82,10 @@ Record the URL and page ID of the newly created Meeting Notes sub-page.
 
 ## Step 3: Read the Template
 
-Read the template file at:
+**Template fallback chain:**
 
-```
-docs/templates/meeting-notes.md
-```
+1. Read `.claude/notion-config.json`. If the target project has a `templates` page ID, use `notion-fetch` to load that page and look for a child page titled "Meeting Notes Template". If found, use its content as the template.
+2. If no project-specific template is found, read the local default at `docs/templates/meeting-notes.md`.
 
 Extract only the content that appears **after** the line:
 
