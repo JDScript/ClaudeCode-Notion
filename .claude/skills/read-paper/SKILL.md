@@ -40,31 +40,88 @@ Use `WebFetch` on the canonical arxiv abstract URL (e.g. `https://arxiv.org/abs/
 - Any GitHub repository link mentioned in the abstract or comments
 - Any official project page link mentioned
 
-### 2b. Optionally fetch the HTML full text
+### 2b. Extract figures from arxiv source
 
-If the abstract alone is insufficient to write a detailed Method or Results section, use `WebFetch` on the HTML version of the paper:
+**This step is critical — always attempt figure extraction.** The teaser figure (Figure 1)
+and method/pipeline figure are key visual elements for the summary.
+
+Use a three-tier fallback strategy:
+
+#### Tier 1: Arxiv HTML (preferred — gives publicly accessible URLs)
+
+Fetch the HTML version:
 
 ```
 https://arxiv.org/html/XXXX.XXXXXvN
 ```
 
-Try version `v1` first. Use a prompt asking to extract: the introduction (for problem/motivation), the method/approach section, and the main results/experiments section (for key results and numbers).
+Try `v1` first. Also use a prompt to extract introduction, method, and results text.
+
+Extract all `<img>` tags. Arxiv HTML uses a naming convention:
+- `S0.F1` or id containing `F1` → Figure 1 (usually the teaser)
+- Figures in the method section (S3.F* or similar) → method/pipeline figure
+- Image filenames are like `x1.png`, `x2.png`, etc.
+
+Construct full URLs as:
+
+```
+https://arxiv.org/html/XXXX.XXXXXv1/x1.png   (teaser)
+https://arxiv.org/html/XXXX.XXXXXv1/x3.png   (method, typically Figure 3)
+```
+
+Verify the URL returns HTTP 200 before using it.
+
+#### Tier 2: Arxiv source tarball (when HTML version is unavailable)
+
+Download and extract the arxiv source:
+
+```bash
+curl -sL "https://arxiv.org/e-print/XXXX.XXXXX" -o /tmp/paper_src.tar.gz
+mkdir -p /tmp/paper_src && tar -xzf /tmp/paper_src.tar.gz -C /tmp/paper_src
+```
+
+Then identify figures:
+
+1. **List image files:** `find /tmp/paper_src -name "*.png" -o -name "*.jpg" -o -name "*.pdf"`
+2. **Read the .tex files** to find which images are the teaser and method figures:
+   - Search for `\label{fig:teaser}` or `\label{fig:1}` — the `\includegraphics` in that
+     figure environment is the teaser image filename.
+   - Search for `\label{fig:method}` or `\label{fig:pipeline}` or `\label{fig:overview}` —
+     that is the method figure.
+3. **Read the figure as an image** using the Read tool if it is a PNG/JPG (the Read tool
+   can display images). For PDF figures, note the filename for reference.
+
+When using source-extracted figures, the images are local and cannot be directly embedded
+in Notion via URL. In this case:
+- Check if the **arxiv HTML version** exists and try to find the same figure there for a URL.
+- Check the **project page** for hosted versions of the same figures.
+- If no URL is available, **omit the image block** from the Notion page and note it in the
+  report. Do NOT use a local file path as an image URL.
+
+#### Tier 3: Project page (last resort)
+
+If the paper has a project page, use `WebFetch` to find teaser/method images hosted there.
+Project pages often have high-resolution figures with stable URLs.
 
 ### 2c. Consolidate extracted metadata
 
 After fetching, record the following fields for later use:
 
-| Field            | Source                                              |
-|------------------|-----------------------------------------------------|
-| `title`          | Abstract page title                                 |
-| `authors`        | Author list from abstract page                      |
-| `year`           | Year from the submission/publication date           |
-| `conference`     | Venue string if found, otherwise leave empty        |
-| `github_url`     | GitHub link if found in abstract or HTML, else empty|
-| `project_page`   | Official project page URL if found, else empty      |
-| `abstract_text`  | The full abstract                                   |
-| `method_notes`   | Key method details from HTML full text (if fetched) |
-| `results_notes`  | Key quantitative results from HTML full text        |
+| Field              | Source                                              |
+|--------------------|-----------------------------------------------------|
+| `title`            | Abstract page title                                 |
+| `authors`          | Author list from abstract page                      |
+| `year`             | Year from the submission/publication date           |
+| `conference`       | Venue string if found, otherwise leave empty        |
+| `github_url`       | GitHub link if found in abstract or HTML, else empty|
+| `project_page`     | Official project page URL if found, else empty      |
+| `abstract_text`    | The full abstract                                   |
+| `method_notes`     | Key method details from HTML full text (if fetched) |
+| `results_notes`    | Key quantitative results from HTML full text        |
+| `teaser_image_url` | URL to Figure 1 / teaser (from Step 2b)            |
+| `teaser_caption`   | Caption text for the teaser figure                  |
+| `method_image_url` | URL to method/pipeline figure (from Step 2b)        |
+| `method_caption`   | Caption text for the method figure                  |
 
 ---
 
@@ -84,41 +141,13 @@ Extract only the content that appears **after** the line:
 <!-- TEMPLATE BODY START — content below is written to the Notion page -->
 ```
 
-The extracted template body is:
+The extracted template body includes image placeholders for the teaser and method figures.
+Use the URLs extracted in Step 2b. If a figure URL is not available, omit that image line
+entirely (do not leave a broken `![]()` in the output).
 
-```
-## AI Summary
+### 3b. Generate the summary
 
-::: callout {icon="📄" color="blue_bg"}
-**One-liner:** {one_liner}
-:::
-
-### Problem & Motivation
-{problem_motivation}
-
-### Method / Approach
-{method_approach}
-
-### Key Results
-{key_results}
-
-### Relevance & Connections
-{relevance_connections}
-
----
-
-## My Notes
-
-*Your personal notes here. This section is never overwritten by AI.*
-```
-
-### 3b. Search for related papers (for Relevance & Connections)
-
-Use `notion-search` to find other paper entries in the same project's References DB. Look for papers with overlapping topics, methods, or benchmarks. Note 2–4 connections by title and a brief description of how they relate to the current paper. If no clear connections are found, note what broader research area this paper fits into.
-
-### 3c. Generate the summary
-
-Fill in all `{placeholder}` variables using the content gathered in Steps 2 and 3b:
+Fill in all `{placeholder}` variables using the content gathered in Step 2:
 
 | Placeholder               | How to fill it                                                                                       |
 |---------------------------|------------------------------------------------------------------------------------------------------|
@@ -126,7 +155,6 @@ Fill in all `{placeholder}` variables using the content gathered in Steps 2 and 
 | `{problem_motivation}`    | 2–4 sentences: what problem is being solved, why it is hard, and why it matters                      |
 | `{method_approach}`       | 3–6 sentences: the core technique, architecture, training setup, or algorithm proposed               |
 | `{key_results}`           | Bullet list of the most important quantitative results, benchmarks beaten, or qualitative findings   |
-| `{relevance_connections}` | 2–4 bullet points connecting this paper to related entries found in Step 3b, or to the broader field |
 
 Write in clear, precise academic prose. Do not copy the abstract verbatim. Synthesize from all sources fetched.
 
@@ -288,18 +316,13 @@ After completing all steps, report a summary to the user:
 Paper processed: <title>
 Notion page:     <page_url>
 
-Content written: AI Summary (Problem & Motivation, Method, Key Results, Relevance & Connections)
+Content written: AI Summary (Problem & Motivation, Method, Key Results)
 
 Properties updated:
   Year:         <value or "not set — could not determine">
   Conference:   <value or "not set — preprint or venue unclear">
   Github:       <url or "not found">
   Project Page: <url or "not found">
-
-Related papers found in References DB:
-  - <title 1>
-  - <title 2>
-  (or "None found")
 
 Notes:
   <Any caveats, e.g. "HTML full text was not available; summary based on abstract only.">

@@ -20,7 +20,7 @@ CREATE TABLE references (
     "Year" TEXT,            -- type: select, options: ["2023", "2024", "2025", "2026"]
     "Project Page" TEXT,    -- type: url
     "Github" TEXT,          -- type: url
-    "Conference" TEXT,      -- type: multi_select, options: ["Science Robotics", "ICLR", "ICCV", "NeurIPS", "CVPR", "ICRA", "CoRL", "Preprint"]
+    "Conference" TEXT,      -- type: multi_select, options: ["Science Robotics", "ICLR", "ICCV", "NeurIPS", "CVPR", "ICRA", "CoRL", "Preprint", "ECCV"]
     "Name" TEXT             -- type: title
 )
 ```
@@ -50,6 +50,7 @@ CREATE TABLE references (
 | `ICRA`           | orange  | International Conference on Robotics and Automation |
 | `CoRL`           | yellow  | Conference on Robot Learning               |
 | `Preprint`       | gray    | Arxiv preprint, not yet published at a venue |
+| `ECCV`           | default | European Conference on Computer Vision       |
 
 ---
 

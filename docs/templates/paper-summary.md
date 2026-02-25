@@ -32,7 +32,6 @@ Variables in `{braces}` are filled by Claude at generation time:
 | `{method_caption}`        | Caption for the method figure (optional)                   |
 | `{method_approach}`       | The core technique or methodology proposed (prose)         |
 | `{key_results}`           | Main results — mix prose for context, bullets for numbers  |
-| `{relevance_connections}` | How this paper connects to the project (prose + bullets)   |
 
 ## Image Sourcing
 
@@ -70,9 +69,6 @@ Try to find figures from (in order of preference):
 
 ### Key Results
 {key_results}
-
-### Relevance to This Project
-{relevance_connections}
 
 ---
 
