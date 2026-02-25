@@ -6,11 +6,7 @@ This document describes the standard References database schema used across rese
 
 ## Standard Schema
 
-Used by: Functional Reorientation, Navigation Reasoning Benchmark, and all new projects.
-
-Example collection IDs:
-- Functional Reorientation: `2ab6f2eb-947e-80f0-8f62-000b76f8f4eb`
-- Navigation Reasoning Benchmark: `30d6f2eb-947e-80ed-958b-000ba8100415`
+Used by all research projects. Collection IDs are stored in `.claude/notion-config.json` under each project's `references_db` field (populated by the `init` skill).
 
 ```sql
 CREATE TABLE references (

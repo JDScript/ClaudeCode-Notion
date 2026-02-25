@@ -6,11 +6,10 @@ This document describes the Tasks database schema used to track work items withi
 
 ## Schema
 
-Source project: Functional Reorientation
-Collection ID: `2ab6f2eb-947e-800c-af0c-000b3a250c50`
+Collection IDs are stored in `.claude/notion-config.json` under each project's `tasks_db` field (populated by the `init` skill).
 
 ```sql
-CREATE TABLE "collection://2ab6f2eb-947e-800c-af0c-000b3a250c50" (
+CREATE TABLE tasks (
     url TEXT UNIQUE,
     createdTime TEXT,
     "Assigned To" TEXT,         -- type: person (JSON array of user IDs)

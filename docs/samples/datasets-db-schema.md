@@ -6,8 +6,7 @@ This document describes the Datasets database schema used in the Navigation Reas
 
 ## Schema
 
-Example collection ID:
-- Navigation Reasoning Benchmark: `30d6f2eb-947e-80d8-82f8-000b470f76d4`
+Collection IDs are stored in `.claude/notion-config.json` under each project's `datasets_db` field (populated by the `init` skill).
 
 ```sql
 CREATE TABLE datasets (
