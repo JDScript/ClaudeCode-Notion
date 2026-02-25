@@ -119,7 +119,7 @@ Rules:
 ```json
 {
   "parent_type": "data_source_id",
-  "parent_id": "2ab6f2eb-947e-800c-af0c-000b3a250c50",
+  "parent_id": "<collection_id_from_step_2>",
   "title": "Draft literature review",
   "properties": {
     "Status": "Not started"
@@ -132,7 +132,7 @@ Rules:
 ```json
 {
   "parent_type": "data_source_id",
-  "parent_id": "2ab6f2eb-947e-800c-af0c-000b3a250c50",
+  "parent_id": "<collection_id_from_step_2>",
   "title": "Implement baseline model",
   "properties": {
     "Status": "In progress",

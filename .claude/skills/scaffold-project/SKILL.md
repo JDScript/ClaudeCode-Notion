@@ -25,6 +25,16 @@ If the user provides all fields inline with the slash command, skip the prompt a
 
 ---
 
+## Step 0.5: Load Config
+
+Read `.claude/notion-config.json` from the repository root.
+
+- If the file does not exist, stop and tell the user:
+  > Config file not found. Please run `/init` first to set up your workspace.
+- Extract `workspace_root` from the config. This is the parent page ID used to create the project page and temporary sub-pages.
+
+---
+
 ## Step 1: Read the Page Template
 
 Read the template file at:
@@ -86,7 +96,7 @@ Use the `notion-create-pages` MCP tool with these parameters:
 ```json
 {
   "parent_type": "page_id",
-  "parent_id": "2306f2eb-947e-805e-9064-ed452a446342",
+  "parent_id": "<workspace_root from config>",
   "title": "Meeting Notes",
   "icon": "📝",
   "properties": {}
@@ -119,14 +129,14 @@ Use the `notion-create-pages` MCP tool with these parameters:
 ```json
 {
   "parent_type": "page_id",
-  "parent_id": "2306f2eb-947e-805e-9064-ed452a446342",
+  "parent_id": "<workspace_root from config>",
   "title": "<project_name>",
   "icon": "<icon_emoji>",
   "content": "<substituted template body from Step 4>"
 }
 ```
 
-- `parent_id` is always `2306f2eb-947e-805e-9064-ed452a446342` (the Research Space page).
+- `parent_id` is the `workspace_root` value from `.claude/notion-config.json`.
 - `title` is the `project_name` provided by the user.
 - `icon` is the `icon_emoji` provided by the user.
 - `content` is the full substituted Markdown body from Step 4, using enhanced Markdown syntax.
@@ -279,11 +289,3 @@ Provide the clickable project page URL so the user can open it directly in Notio
 | `notion-move-pages`     | Move Meeting Notes under the project page                    |
 | `notion-create-database`| (Optional) Create Tasks and References inline databases      |
 | `notion-fetch`          | Fetch MCP resource for enhanced Markdown spec (Step 2)       |
-
----
-
-## Reference: Fixed IDs
-
-| Name              | Notion Page ID                         |
-|-------------------|----------------------------------------|
-| Research Space    | `2306f2eb-947e-805e-9064-ed452a446342` |

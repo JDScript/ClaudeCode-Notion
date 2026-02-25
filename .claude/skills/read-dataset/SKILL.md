@@ -24,6 +24,10 @@ Use `notion-fetch` on that URL to load the page. Extract the arxiv URL from the 
 
 Normalize it to the canonical abstract form: `https://arxiv.org/abs/XXXX.XXXXX`. Proceed to Step 2; the target page will be resolved in Step 4.
 
+**Resolving the target Datasets DB:**
+
+If the user specifies which project the dataset belongs to (or if it can be inferred), read `.claude/notion-config.json` and look up the project's `datasets_db` collection ID. If the config file does not exist, stop and tell the user to run `/init` first. If the project does not have a `datasets_db` entry in config, ask the user which project's Datasets DB to use.
+
 ---
 
 ## Step 2: Fetch Dataset Paper Content
@@ -155,7 +159,7 @@ The target page is already known. Skip to Step 5.
 
 ### Case B — User provided only an arxiv URL
 
-Search the Datasets DB (collection ID: `30d6f2eb-947e-80d8-82f8-000b470f76d4`) for an existing entry whose `Arxiv` property matches the arxiv URL.
+Search the project's Datasets DB (collection ID from `.claude/notion-config.json` → `projects.<project_name>.datasets_db`) for an existing entry whose `Arxiv` property matches the arxiv URL.
 
 **If a matching entry is found:** Use that page as the target.
 
@@ -163,7 +167,7 @@ Search the Datasets DB (collection ID: `30d6f2eb-947e-80d8-82f8-000b470f76d4`) f
 
 ```json
 {
-  "parent": {"data_source_id": "30d6f2eb-947e-80d8-82f8-000b470f76d4"},
+  "parent": {"data_source_id": "<datasets_db_collection_id from config>"},
   "pages": [{
     "properties": {
       "Name": "<dataset_name>",
